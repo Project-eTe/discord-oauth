@@ -1,12 +1,12 @@
 {
-  "name": "@ete/discord-oauth",
+  "name": "@etebot/discord-oauth",
   "version": "1.0.0",
   "description": "Discord Oauth For eTe Project.",
   "main": "./dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "wonderlandpark<wonderlandpark@callisto.team>",
   "license": "ISC",
   "types": "./index.d.ts",
   "dependencies": {
@@ -14,5 +14,16 @@
   },
   "devDependencies": {
     "@types/node-fetch": "^2.5.7"
-  }
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Project-eTe/discord-oauth.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Project-eTe/discord-oauth/issues"
+  },
+  "homepage": "https://github.com/Project-eTe/discord-oauth#readme"
 }
