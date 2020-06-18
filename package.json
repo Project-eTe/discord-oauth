@@ -2,7 +2,7 @@
   "name": "@ete/discord-oauth",
   "version": "1.0.0",
   "description": "Discord Oauth For eTe Project.",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,5 +11,8 @@
   "types": "./index.d.ts",
   "dependencies": {
     "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {
+    "@types/node-fetch": "^2.5.7"
   }
 }
