@@ -1,6 +1,6 @@
 {
   "name": "@etebot/discord-oauth",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Discord Oauth For eTe Project.",
   "main": "dist/index.js",
   "types": "./types.ts",
