@@ -43,7 +43,7 @@
     }
     export interface UserTokenInfo {
         access_token: string;
-        expires_in: number|Date;
+        expires_in: Date;
         refresh_token: string;
         scope: string;
         token_type: string;

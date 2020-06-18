@@ -1,14 +1,14 @@
 {
   "name": "@etebot/discord-oauth",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Discord Oauth For eTe Project.",
-  "main": "./dist/index.js",
+  "main": "dist/index.js",
+  "types": "./types.ts",
   "scripts": {
     "build": "tsc"
   },
   "author": "wonderlandpark<wonderlandpark@callisto.team>",
   "license": "ISC",
-  "types": "./index.d.ts",
   "dependencies": {
     "node-fetch": "^2.6.0"
   },

@@ -49,13 +49,13 @@ export class OauthApplication {
      * @returns User ID
      */
 
-     async addUser(code: string):Promise<User> {
+     async addUser(code: string):Promise<UserTokenInfo> {
         return await this.getUserToken(code)
         .then(r=> {
             r['expires_in'] = new Date(Number(new Date()) + Number(r['expires_in']) * 1000)
             return this.getDiscordData({ token_type: r.token_type, access_token: r.access_token }).then(res=> {
                 this.users.set(res.id, r)
-                return res
+                return r
             })
         })
 
