@@ -23,14 +23,6 @@
         premium_type: number;
     }
 
-    export interface GuildBasic {
-        id: string;
-        name: string;
-        icon: string;
-        owner: boolean;
-        permissions: number;
-        features: GuildFeature[]
-    }
 
     export enum GuildFeature {
         "ANIMATED_ICON",
