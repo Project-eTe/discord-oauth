@@ -93,7 +93,7 @@ export class OauthApplication {
      * @returns User Profile Info
      */
 
-    async getDiscordData(tokenData: tokenData):Promise<User> {
+    async getUser(tokenData: tokenData):Promise<User> {
         if(!tokenData || !tokenData.token_type || !tokenData.access_token) throw '`tokenData` is required'
         let user = await fetch(BASEURL + '/v6/users/@me', {
             method: 'GET',
