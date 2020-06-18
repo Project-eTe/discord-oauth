@@ -4,7 +4,6 @@ const BASEURL = 'https://discord.com/api'
 
 export class OauthApplication {
     config: config
-    users: Map<string, UserTokenInfo>
     /**
      * Discord Oauth2 Application Class
      * @param config Discord Oauth2 Application Config
@@ -14,15 +13,9 @@ export class OauthApplication {
         if(!config.client_id || !config.redirect_uri || !config.client_secret || !config.scope) throw 'Please include full client information.'
         
         this.config = config
-        this.users = new Map()
     }
-    /**
-     * Get User Token with code.
-     * @param code 
-     * @returns Token Info from Discord.
-     */
 
-    async getUserToken(code: string):Promise<UserTokenInfo> {
+    async _getToken(code: string):Promise<UserTokenInfo> {
         if(!code) throw '`code` is required'
         let user = await fetch(BASEURL + '/oauth2/token', {
             method: 'post',
@@ -38,35 +31,27 @@ export class OauthApplication {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         })
+        
         if(user.status !== 200) throw 'Invaild `code`.'
 
         return user.json()
     }
 
     /**
-     * Add User with code.
-     * @param code
-     * @returns User ID
+     * Get User Token with code.
+     * @param code 
+     * @returns Token Info from Discord.
      */
 
-     async addUser(code: string):Promise<UserTokenInfo> {
-        return await this.getUserToken(code)
-        .then(r=> {
+    async getToken(code: string):Promise<UserTokenInfo> {
+        return await this._getToken(code).then(r=> {
             r['expires_in'] = new Date(Number(new Date()) + Number(r['expires_in']) * 1000)
-            return this.getDiscordData({ token_type: r.token_type, access_token: r.access_token }).then(res=> {
-                this.users.set(res.id, r)
-                return r
-            })
+            return r
         })
+    }
 
-     }
-    
-     /**
-      * Force refresh token for user
-      * @param refresh_token Refresh Token for user
-      * @returns Token Info from Discord.
-      */
-     async refreshToken(refresh_token: string):Promise<UserTokenInfo> {
+
+     async _refreshToken(refresh_token: string):Promise<UserTokenInfo> {
          let user = await fetch(BASEURL + '/oauth2/token', {
             method: 'post',
             body: formData({
@@ -86,81 +71,18 @@ export class OauthApplication {
          return user.json()
      }
 
-     /**
-      * Get Stored User By User ID
-      * @param id User ID
-      * 
-      * @returns User Discord Data (/@me)
+    /**
+      * Force refresh token for user
+      * @param refresh_token Refresh Token for user
+      * @returns Token Info from Discord.
       */
-     async getUser(id: string):Promise<User> {
-        let user = this.users.get(id)
-        if(!user) throw 'User not found.'
-        if(new Date() >= user.expires_in) {
-            this.refreshToken(user.refresh_token).then(r=> this.users.set(id, r))
-        }
 
-        user = this.users.get(id)
-
-        return await this.getDiscordData({ token_type: user.token_type, access_token: user.access_token }).then(r=> r)
-
-     }
-
-     /**
-      * Get User Guild List
-      * @param id User ID
-      * 
-      * @returns User Guild Data
-      */
-     async getUserGuilds(id: string):Promise<User> {
-        let user = this.users.get(id)
-        if(!user) throw 'User not found.'
-        if(new Date() >= user.expires_in) {
-            this.refreshToken(user.refresh_token).then(r=> this.users.set(id, r))
-        }
-
-        user = this.users.get(id)
-
-        return await this.getGuilds({ token_type: user.token_type, access_token: user.access_token }).then(r=> r)
-
-     }
-     /**
-      * Get User Guild by ID
-      * @param id User ID
-      * @param guildID Guild ID
-      */
-     async getUserGuild(id: string, guildID: string):Promise<User> {
-        let user = this.users.get(id)
-        if(!user) throw 'User not found.'
-        if(new Date() >= user.expires_in) {
-            this.refreshToken(user.refresh_token).then(r=> this.users.set(id, r))
-        }
-
-        user = this.users.get(id)
-
-        return await this.getGuild({ token_type: user.token_type, access_token: user.access_token }, guildID).then(r=> r)
-
-     }
-
-
-     /**
-      * Refresh User Token By User ID
-      * @param id User ID
-      * 
-      * @returns Token Info
-      */
-     async refreshUserToken(id: string):Promise<UserTokenInfo> {
-        let user = this.users.get(id)
-        if(!user) throw 'User not found.'
-        
-        return this.refreshToken(user.refresh_token).then(r=> {
+     async refreshToken(refresh_token: string):Promise<UserTokenInfo> {
+        return await this._refreshToken(refresh_token).then(r=> {
             r['expires_in'] = new Date(Number(new Date()) + Number(r['expires_in']) * 1000)
-            this.users.set(id, r)
-
             return r
         })
-
-     }
-     
+    }
      /* Discord EndPoints */
 
      /**
@@ -204,29 +126,8 @@ export class OauthApplication {
 
         return user.json()
     }
-    /**
-     * Get Guild Data by ID
-     * @param tokenData 
-     * tokenData.token_type Token Type(ex: Bearer)
-     * tokenData.acess_token Access Token
-     * @param id Guild ID
-     */
-    async getGuild(tokenData: tokenData, id: string) {
-        if(!tokenData || !tokenData.token_type || !tokenData.access_token) throw '`tokenData` is required'
-        if(!id) throw '`id` is required'
-        let user = await fetch(BASEURL + '/v6/guilds/' + id, {
-            method: 'GET',
-            headers: {
-                Authorization: `${tokenData.token_type} ${tokenData.access_token}`
-            }
-        })
-        // if(user.status !== 200) throw 'Invaild `tokenData`.'
-
-        return user.json()
-    }
 
 }
-
 
 
 function formData(params: { [x: string]: any; }) {

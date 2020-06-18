@@ -52,4 +52,5 @@
     export interface tokenData {
         token_type: string;
         access_token: string;
+        expires_in?: Date;
     }
